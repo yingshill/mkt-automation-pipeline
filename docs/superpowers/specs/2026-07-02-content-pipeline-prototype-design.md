@@ -49,7 +49,7 @@ prototype/
 
 ## Components
 
-1. **Content Agent** — input: one session (YouTube video + speaker-DB entry). Output: draft posts for LinkedIn, Instagram, Facebook, a YouTube-shorts script, and a Sidekick post — each following that channel's format conventions and the voice brief. Writes drafts to `store.py` and `output/drafts/`.
+1. **Content Agent** — input: one session (YouTube video + speaker-DB entry). Output: draft posts for LinkedIn, Instagram, Facebook, a YouTube-shorts script, and a Sidekick post — each following that channel's format conventions and the voice brief. Writes drafts to `store.py` and `output/drafts/`. **[VERIFY during implementation]** Sidekick Platform's actual post format/API is unconfirmed — `research-brief.md` only identifies it as "community channel," not its posting mechanics. Treat the Sidekick draft as generic-text until that's checked.
 2. **Lead Capture Agent** — input: a sample or (eventually) real interest-signal record. Output: enriched lead record (company/context, suggested interest tier, contact) written to the store. Exercised against seeded sample records for now.
 3. **Outreach Agent** — input: an enriched lead + the session/content that likely sparked interest. Output: a draft personalized follow-up message, written to `output/outreach-drafts/`. No send path exists in the code.
 4. **Nurture Agent** — input: a lead's current stage. Output: the next 2-3 touch message templates for that stage, written to the store. No real scheduler.
@@ -79,6 +79,7 @@ YouTube playlist + speaker DB (public, no auth)
 ## Error handling
 
 - YouTube fetch: if no transcript is available for a video, fall back to title + description; log the fallback, never fail the run silently.
+- Speaker-DB fetch: `research-brief.md` describes it only as "a searchable speaker DB (track/theme/type filters)" on the public website — a UI, not a confirmed API. **[VERIFY during implementation]** whether it's scrapable cleanly or needs a different access approach; don't assume a clean API exists until checked.
 - Content generation: retry on failure rather than dropping a channel's draft; a failed channel is reported in the dashboard as "not generated," not silently omitted.
 - Store writes: standard SQLite transaction semantics; no partial writes across a single agent's output.
 - Outreach: structurally cannot fail into a real send, because no send capability exists in the code.
