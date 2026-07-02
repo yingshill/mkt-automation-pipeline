@@ -1,0 +1,3 @@
+.venv/
+prototype/data/pipeline.db
+__pycache__/
