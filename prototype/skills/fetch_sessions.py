@@ -7,15 +7,19 @@ individual TechEquity speaker pages, found by guessing a slug from
 the speaker's name (the index page is client-rendered and can't be
 listed reliably without a browser — see plan grounding notes).
 """
+import logging
 import re
-import defusedxml.ElementTree as ET  # nosec — stdlib ElementTree is XXE/billion-laughs
-                                       # vulnerable on untrusted XML; this feed is fetched
-                                       # over the network, so treat it as untrusted input.
+# Using defusedxml (not stdlib xml.etree.ElementTree) because this feed is
+# fetched over the network and must be treated as untrusted input —
+# stdlib ElementTree is vulnerable to XXE/billion-laughs on untrusted XML.
+import defusedxml.ElementTree as ET
 
 import requests
 from bs4 import BeautifulSoup
 from youtube_transcript_api import YouTubeTranscriptApi
 from youtube_transcript_api._errors import TranscriptsDisabled, NoTranscriptFound
+
+logger = logging.getLogger(__name__)
 
 YOUTUBE_RSS_URL = "https://www.youtube.com/feeds/videos.xml"
 SPEAKER_PAGE_URL = "https://techequity-ai.org/speaker/{slug}/"
@@ -69,7 +73,11 @@ def fetch_channel_videos(channel_id: str) -> list[dict]:
 def fetch_transcript(video_id: str) -> str | None:
     try:
         segments = YouTubeTranscriptApi.get_transcript(video_id)
-    except (TranscriptsDisabled, NoTranscriptFound, Exception):
+    except (TranscriptsDisabled, NoTranscriptFound, Exception) as exc:
+        logger.warning(
+            "fetch_transcript: no transcript available for video_id=%s (%s: %s); falling back to None",
+            video_id, type(exc).__name__, exc,
+        )
         return None
     return " ".join(seg["text"] for seg in segments)
 
@@ -82,6 +90,11 @@ def fetch_speaker_profile(speaker_name: str) -> dict | None:
     slug = slugify_name(speaker_name)
     resp = requests.get(SPEAKER_PAGE_URL.format(slug=slug), timeout=10)
     if resp.status_code == 404:
+        logger.warning(
+            "fetch_speaker_profile: no speaker page found for speaker_name=%r (slug=%r, url=%s returned 404); "
+            "falling back to None",
+            speaker_name, slug, SPEAKER_PAGE_URL.format(slug=slug),
+        )
         return None
     resp.raise_for_status()
     soup = BeautifulSoup(resp.text, "html.parser")

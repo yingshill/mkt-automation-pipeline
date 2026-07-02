@@ -1,3 +1,5 @@
+import re
+
 import pytest
 from prototype.skills.fetch_sessions import (
     resolve_channel_id, fetch_channel_videos, fetch_transcript,
@@ -39,6 +41,25 @@ def test_fetch_speaker_profile_known_speaker_returns_bio():
     assert profile is not None
     assert "bio" in profile
     assert len(profile["bio"]) > 0
+
+
+@pytest.mark.integration
+def test_fetch_speaker_profile_known_speaker_returns_real_title_not_decorative_heading():
+    # Regression test for the bug this task fixed: the live page (Elementor
+    # page builder) emits a decorative `<h2> &gt; </h2>` breadcrumb heading
+    # before the real title/company h2, both sharing the same CSS class. A
+    # naive `soup.find("h2")` silently grabs the decorative ">" instead of
+    # the title. Verified live during this task:
+    # https://techequity-ai.org/speaker/george-ekas/ -> title_company ==
+    # "Director of Engineering" (exact match, checked 2026-07-01).
+    profile = fetch_speaker_profile("George Ekas")
+    assert profile is not None
+    title_company = profile["title_company"]
+    assert title_company
+    # Must contain actual words, not just punctuation/symbols (the decorative
+    # heading's text content, if this regressed, would be a bare ">").
+    assert re.search(r"\w", title_company)
+    assert title_company == "Director of Engineering"
 
 
 @pytest.mark.integration
