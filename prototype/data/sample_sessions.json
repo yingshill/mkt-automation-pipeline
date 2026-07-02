@@ -1,0 +1,12 @@
+[
+  {
+    "video_id": "local-placeholder-001",
+    "title": "[PLACEHOLDER] TechEquity AI Summit — Sample Session",
+    "url": "local://placeholder-001.mp4",
+    "description": "PLACEHOLDER RECORD — not a real session. Stands in for a locally-provided video file whose title/description would be supplied manually alongside it, per the 2026-07-01 decision to defer real session-data sourcing (see ../../DECISIONS.md). No real content exists yet; this exists only to exercise pipeline mechanics (Content Agent draft generation, dashboard rendering, orchestration) — do not treat its output as publishable.",
+    "speaker_name": null,
+    "speaker_bio": null,
+    "transcript": null,
+    "transcript_available": false
+  }
+]
