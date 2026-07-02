@@ -1,7 +1,8 @@
 import pytest
-from prototype.skills.validators import validate_draft
+from prototype.skills.validators import validate_draft, validate_lead_enrichment
 
 VALID_CHANNELS = {"LinkedIn", "Instagram", "Facebook", "YouTube", "Sidekick"}
+VALID_TIERS = {"Bronze", "Silver", "Gold", "Platinum", "Design Partner"}
 
 
 def test_validate_draft_accepts_well_formed_draft():
@@ -21,3 +22,19 @@ def test_validate_draft_rejects_empty_content():
 def test_validate_draft_rejects_missing_keys():
     with pytest.raises(ValueError):
         validate_draft({"channel": "LinkedIn"})
+
+
+def test_validate_lead_enrichment_accepts_well_formed():
+    validate_lead_enrichment({
+        "suggested_tier": "Gold", "company": "Acme AI", "context": "Asked about sponsorship at the May forum",
+    })
+
+
+def test_validate_lead_enrichment_rejects_unknown_tier():
+    with pytest.raises(ValueError, match="tier"):
+        validate_lead_enrichment({"suggested_tier": "Diamond", "company": "Acme AI", "context": "..."})
+
+
+def test_validate_lead_enrichment_rejects_empty_context():
+    with pytest.raises(ValueError, match="context"):
+        validate_lead_enrichment({"suggested_tier": "Gold", "company": "Acme AI", "context": ""})

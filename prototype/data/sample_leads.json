@@ -1,0 +1,23 @@
+[
+  {
+    "name": "Priya Anand",
+    "source": "sample-seed",
+    "email": "priya@example-startup.ai",
+    "company": "Example Startup AI",
+    "raw_note": "Filled out the exhibitor interest form after the March forum, asked about mid-tier sponsorship."
+  },
+  {
+    "name": "Marcus Webb",
+    "source": "sample-seed",
+    "email": "marcus@bigcorp.example",
+    "company": "BigCorp Example",
+    "raw_note": "LinkedIn DM after seeing a recap post, asked whether BigCorp could get a keynote slot at the November summit."
+  },
+  {
+    "name": "Dana Kim",
+    "source": "sample-seed",
+    "email": null,
+    "company": null,
+    "raw_note": "Attended two monthly forums as a guest, asked a volunteer about becoming a paid member/sponsor."
+  }
+]
