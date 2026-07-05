@@ -1,5 +1,5 @@
 import pytest
-from prototype.skills.validators import validate_draft, validate_lead_enrichment, validate_outreach_message
+from prototype.skills.validators import validate_draft, validate_lead_enrichment, validate_outreach_message, validate_nurture_plan
 
 VALID_CHANNELS = {"LinkedIn", "Instagram", "Facebook", "YouTube", "Sidekick"}
 VALID_TIERS = {"Bronze", "Silver", "Gold", "Platinum", "Design Partner"}
@@ -61,3 +61,20 @@ def test_outreach_agent_file_contains_no_send_capability():
         content = f.read().lower()
     for marker in FORBIDDEN_SEND_MARKERS:
         assert marker not in content
+
+
+VALID_STAGES = {"new", "touch_1", "touch_2", "touch_3", "closed"}
+
+
+def test_validate_nurture_plan_accepts_well_formed():
+    validate_nurture_plan({"stage": "touch_1", "next_touch_template": "Checking in on..."})
+
+
+def test_validate_nurture_plan_rejects_unknown_stage():
+    with pytest.raises(ValueError, match="stage"):
+        validate_nurture_plan({"stage": "touch_99", "next_touch_template": "..."})
+
+
+def test_validate_nurture_plan_rejects_empty_template():
+    with pytest.raises(ValueError, match="template"):
+        validate_nurture_plan({"stage": "touch_1", "next_touch_template": ""})

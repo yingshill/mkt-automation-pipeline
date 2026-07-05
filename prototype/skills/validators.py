@@ -32,3 +32,15 @@ def validate_outreach_message(message: dict) -> None:
         raise ValueError("outreach message missing required key: lead_id")
     if "message" not in message or not message["message"] or not message["message"].strip():
         raise ValueError("outreach message content must not be empty")
+
+
+VALID_STAGES = {"new", "touch_1", "touch_2", "touch_3", "closed"}
+
+
+def validate_nurture_plan(plan: dict) -> None:
+    if "stage" not in plan or "next_touch_template" not in plan:
+        raise ValueError("nurture plan missing required keys: stage, next_touch_template")
+    if plan["stage"] not in VALID_STAGES:
+        raise ValueError(f"unknown stage: {plan['stage']!r} (expected one of {VALID_STAGES})")
+    if not plan["next_touch_template"] or not plan["next_touch_template"].strip():
+        raise ValueError("next_touch_template must not be empty")
