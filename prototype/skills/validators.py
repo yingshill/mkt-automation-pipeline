@@ -44,3 +44,14 @@ def validate_nurture_plan(plan: dict) -> None:
         raise ValueError(f"unknown stage: {plan['stage']!r} (expected one of {VALID_STAGES})")
     if not plan["next_touch_template"] or not plan["next_touch_template"].strip():
         raise ValueError("next_touch_template must not be empty")
+
+
+def validate_content_agent_input(input_dict: dict) -> None:
+    session = input_dict.get("session")
+    template_text = input_dict.get("template_text")
+    luma_event_details = input_dict.get("luma_event_details")
+    if session is None and not (template_text and luma_event_details):
+        raise ValueError(
+            "content agent input must include either a session, or both "
+            "template_text and luma_event_details"
+        )

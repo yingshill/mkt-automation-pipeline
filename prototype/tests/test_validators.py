@@ -1,5 +1,5 @@
 import pytest
-from prototype.skills.validators import validate_draft, validate_lead_enrichment, validate_outreach_message, validate_nurture_plan
+from prototype.skills.validators import validate_draft, validate_lead_enrichment, validate_outreach_message, validate_nurture_plan, validate_content_agent_input
 
 VALID_CHANNELS = {"LinkedIn", "Instagram", "Facebook", "YouTube", "Sidekick"}
 VALID_TIERS = {"Bronze", "Silver", "Gold", "Platinum", "Design Partner"}
@@ -78,3 +78,60 @@ def test_validate_nurture_plan_rejects_unknown_stage():
 def test_validate_nurture_plan_rejects_empty_template():
     with pytest.raises(ValueError, match="template"):
         validate_nurture_plan({"stage": "touch_1", "next_touch_template": ""})
+
+
+def test_validate_content_agent_input_accepts_session_only():
+    validate_content_agent_input({
+        "session": {"video_id": "abc123", "title": "AI Agents 101"},
+        "template_text": None,
+        "luma_event_details": None,
+        "past_reference_post": None,
+    })
+
+
+def test_validate_content_agent_input_accepts_template_and_luma_only():
+    validate_content_agent_input({
+        "session": None,
+        "template_text": "Join us at [Event Name] on [Date]...",
+        "luma_event_details": {"event_title": "June Forum", "date": "2026-06-30"},
+        "past_reference_post": None,
+    })
+
+
+def test_validate_content_agent_input_accepts_all_four_fields():
+    validate_content_agent_input({
+        "session": {"video_id": "abc123", "title": "AI Agents 101"},
+        "template_text": "Join us at [Event Name] on [Date]...",
+        "luma_event_details": {"event_title": "June Forum", "date": "2026-06-30"},
+        "past_reference_post": "Last month's recap post text...",
+    })
+
+
+def test_validate_content_agent_input_rejects_template_without_luma():
+    with pytest.raises(ValueError, match="session"):
+        validate_content_agent_input({
+            "session": None,
+            "template_text": "Join us at [Event Name] on [Date]...",
+            "luma_event_details": None,
+            "past_reference_post": None,
+        })
+
+
+def test_validate_content_agent_input_rejects_luma_without_template():
+    with pytest.raises(ValueError, match="session"):
+        validate_content_agent_input({
+            "session": None,
+            "template_text": None,
+            "luma_event_details": {"event_title": "June Forum", "date": "2026-06-30"},
+            "past_reference_post": None,
+        })
+
+
+def test_validate_content_agent_input_rejects_all_none():
+    with pytest.raises(ValueError, match="session"):
+        validate_content_agent_input({
+            "session": None,
+            "template_text": None,
+            "luma_event_details": None,
+            "past_reference_post": None,
+        })
