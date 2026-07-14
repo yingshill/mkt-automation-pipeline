@@ -29,6 +29,14 @@ def render_dashboard(db_path: str) -> str:
         lines.append(f"- **{s['title']}** ({s['video_id']}) — drafts: {channels}")
     lines.append("")
 
+    unattached_drafts = [d for d in drafts if d["session_id"] is None]
+    if unattached_drafts:
+        lines.append("## Unattached Drafts")
+        lines.append("_Drafts with no linked session — e.g. template+Luma-only captions._")
+        for d in unattached_drafts:
+            lines.append(f"- **{d['channel']}** (draft #{d['id']}) — {d['content'][:80]}{'...' if len(d['content']) > 80 else ''}")
+        lines.append("")
+
     lines.append("## Leads")
     if not leads:
         lines.append("_none yet_")

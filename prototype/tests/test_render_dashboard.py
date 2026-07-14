@@ -36,3 +36,12 @@ def test_render_dashboard_reflects_seeded_data(db_path):
     assert "Sessions: 1" in report
     assert "Drafts: 1" in report
     assert "Leads: 1" in report
+
+
+def test_render_dashboard_shows_unattached_drafts(db_path):
+    insert_draft(db_path, None, "LinkedIn", "A template+Luma draft with no session")
+
+    report = render_dashboard(db_path)
+    assert "Drafts: 1" in report
+    assert "## Unattached Drafts" in report
+    assert "LinkedIn" in report.split("## Unattached Drafts")[1]
