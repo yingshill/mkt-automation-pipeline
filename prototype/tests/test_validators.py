@@ -135,3 +135,12 @@ def test_validate_content_agent_input_rejects_all_none():
             "luma_event_details": None,
             "past_reference_post": None,
         })
+
+
+def test_content_agent_file_documents_extended_inputs():
+    with open("prototype/agents/content-agent.md") as f:
+        content = f.read()
+    for marker in ("template_text", "luma_event_details", "past_reference_post"):
+        assert marker in content
+    assert "buildable now" in content
+    assert "pending template/tone spec" in content
