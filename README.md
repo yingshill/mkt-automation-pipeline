@@ -16,5 +16,5 @@ The design-partner build confirmed in the 2026-07-01 call with Sheena Tu: a soci
 
 ## Status
 
-- **Stage:** Not started — repo + runtime workspace scaffolded only. No agents/workflows authored yet.
-- **Created:** 2026-07-01
+- **Stage:** Prototype substantially built, in Claude Code, on branch `worktree-content-pipeline-prototype`. Content, Lead Capture, Outreach, and Nurture agents + the dashboard renderer are committed. Orchestration driver (wiring all 5 together end-to-end) is in progress. **Not yet ported to ClawMax/OpenClaw** — still lives entirely in this repo's Claude Code worktree, per the design spec's staged plan.
+- **Created:** 2026-07-01. Last build activity: 2026-07-02 (per worktree commits) — see `ROADMAP.md` for exact task status and the 2026-07-13 decision point on next direction.

@@ -1,0 +1,34 @@
+# TechEquity Marketing Workflow — Project Instructions
+
+**Read this first, every session — this is the build project for the TechEquity AI / ClawMax social-media content pipeline.**
+
+## Where the actual code lives — check this before touching anything
+
+This repo root (`master` branch) holds **design docs only** — `README.md`, `ROADMAP.md`, `DECISIONS.md`, `docs/`. No prototype code lives here.
+
+**The actual prototype code lives in a git worktree:**
+
+```
+/Users/mac/Desktop/Projects & Learning/techequity-marketing-workflow/.claude/worktrees/content-pipeline-prototype/
+```
+
+— checked out on branch `worktree-content-pipeline-prototype`.
+
+Before reading, editing, or running any agent/skill/test code, `cd` into that worktree path first — do not assume the repo root has it. If unsure the worktree still exists, run `git worktree list` from the repo root to confirm current state before acting.
+
+## Orientation — what to read, and where
+
+- [README.md](README.md) — what this project is, current build stage.
+- [ROADMAP.md](ROADMAP.md) — what's active/backlog, open questions. Kept in sync with the worktree's actual git log — if it looks stale, verify against `git log` in the worktree before trusting it.
+- [DECISIONS.md](DECISIONS.md) — why things are structured this way (append-only).
+- **BD/pitch/relationship context** (not build) → `../claude/brand_os/brands/techequity/` — separate repo, owns the strategy/research/relationship reasoning. Has its own `CLAUDE.md` with its own orientation. Don't duplicate that reasoning here.
+- **ClawMax runtime** (not yet deployed to — the prototype is still Claude-Code-only) → `../openclaw_GTM/clawmax/WORKSPACES/techequity/`
+
+## Living design specs — update in place, don't fork new files
+
+The captions-integration design spec (`docs/superpowers/specs/2026-07-13-mateja-captions-integration-design.md`, inside the `content-pipeline-prototype` worktree) is a **living document** for that specific effort — as the design evolves, edit it in place rather than creating a new dated spec each time. The original `2026-07-02-content-pipeline-prototype-design.md` stays as historical record for the initial 5-part prototype design; the two are not the same file and shouldn't be merged. Only fork a genuinely new spec if work grows beyond "extending the Content Agent" into a separate effort.
+
+## Standing facts worth not re-deriving
+
+- Confirmed direction (2026-07-13): **ClawMax is the runtime for the whole marketing workflow** — not a standalone chatbot. The **captions AI project specifically** (not the full 5-part pipeline) is the near-term partnership deliverable. See `DECISIONS.md` in the brand_os BD repo for the full reasoning.
+- The prototype's approval loop must stay **human-in-the-loop by design** — TechEquity's real workflow has Sheena/Ave reviewing drafts and Mateja/Satvika editing them before anything posts. The agent's job is to produce a draft into their existing review surface, not to auto-publish.
