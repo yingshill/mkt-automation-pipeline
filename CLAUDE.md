@@ -2,19 +2,13 @@
 
 **Read this first, every session — this is the build project for the TechEquity AI / ClawMax social-media content pipeline.**
 
-## Where the actual code lives — check this before touching anything
+## Where the actual code lives
 
-This repo root (`master` branch) holds **design docs only** — `README.md`, `ROADMAP.md`, `DECISIONS.md`, `docs/`. No prototype code lives here.
+**⚠️ Corrected 2026-07-14 — this used to describe a git worktree; that's gone now, don't go looking for it.** The prototype was originally built in a separate worktree (`worktree-content-pipeline-prototype`) so it could iterate independently of the design docs on `master`. As of 2026-07-14, all of that work (the original 5-part prototype + the captions-integration extension, 11 tasks total) was merged into `master` via fast-forward, and the worktree + branch were removed. **The code lives directly in this repo root now** — `prototype/`, `docs/`, `README.md`, `ROADMAP.md`, `DECISIONS.md` are all on `master`, no `cd` into a subdirectory required. Run `git worktree list` if you ever need to confirm there's no worktree currently active before assuming this.
 
-**The actual prototype code lives in a git worktree:**
+## Remote
 
-```
-/Users/mac/Desktop/Projects & Learning/techequity-marketing-workflow/.claude/worktrees/content-pipeline-prototype/
-```
-
-— checked out on branch `worktree-content-pipeline-prototype`.
-
-Before reading, editing, or running any agent/skill/test code, `cd` into that worktree path first — do not assume the repo root has it. If unsure the worktree still exists, run `git worktree list` from the repo root to confirm current state before acting.
+`origin` → `https://github.com/yingshill/mkt-automation-pipeline.git` (added + first pushed 2026-07-14). Push to this remote for this repo — don't ask which repo, this is it.
 
 ## Orientation — what to read, and where
 
@@ -26,7 +20,7 @@ Before reading, editing, or running any agent/skill/test code, `cd` into that wo
 
 ## Living design specs — update in place, don't fork new files
 
-The captions-integration design spec (`docs/superpowers/specs/2026-07-13-mateja-captions-integration-design.md`, inside the `content-pipeline-prototype` worktree) is a **living document** for that specific effort — as the design evolves, edit it in place rather than creating a new dated spec each time. The original `2026-07-02-content-pipeline-prototype-design.md` stays as historical record for the initial 5-part prototype design; the two are not the same file and shouldn't be merged. Only fork a genuinely new spec if work grows beyond "extending the Content Agent" into a separate effort.
+The captions-integration design spec (`docs/superpowers/specs/2026-07-13-mateja-captions-integration-design.md`, now directly in this repo's `docs/` — see the worktree correction above) is a **living document** for that specific effort — as the design evolves, edit it in place rather than creating a new dated spec each time. The original `2026-07-02-content-pipeline-prototype-design.md` stays as historical record for the initial 5-part prototype design; the two are not the same file and shouldn't be merged. Only fork a genuinely new spec if work grows beyond "extending the Content Agent" into a separate effort.
 
 ## Standing facts worth not re-deriving
 
