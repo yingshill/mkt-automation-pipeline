@@ -70,6 +70,14 @@ def test_list_drafts_without_session_filter_returns_all(db_path):
     assert len(list_drafts(db_path)) == 2
 
 
+def test_insert_draft_without_session_id(db_path):
+    draft_id = insert_draft(db_path, None, "LinkedIn", "A template+Luma draft with no session")
+    drafts = list_drafts(db_path)
+    assert len(drafts) == 1
+    assert drafts[0]["id"] == draft_id
+    assert drafts[0]["session_id"] is None
+
+
 def test_insert_lead_and_enrich(db_path):
     lead_id = insert_lead(db_path, name="Sam Prospect", source="sample-seed", email="sam@example.com")
     update_lead_enrichment(db_path, lead_id, company="Acme AI", suggested_tier="Gold", context="Interested in sponsorship")

@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS sessions (
 
 CREATE TABLE IF NOT EXISTS drafts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    session_id INTEGER NOT NULL REFERENCES sessions(id),
+    session_id INTEGER REFERENCES sessions(id),
     channel TEXT NOT NULL,
     content TEXT NOT NULL,
     created_at TEXT NOT NULL
