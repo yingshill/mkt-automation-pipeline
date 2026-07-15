@@ -13,8 +13,9 @@
 ## Orientation — what to read, and where
 
 - [README.md](README.md) — what this project is, current build stage.
-- [ROADMAP.md](ROADMAP.md) — what's active/backlog, open questions. Kept in sync with the worktree's actual git log — if it looks stale, verify against `git log` in the worktree before trusting it.
+- [ROADMAP.md](ROADMAP.md) — what's active/backlog, open questions. Kept in sync with `git log` — if it looks stale, verify against `git log` in this repo root before trusting it (no worktree to check anymore).
 - [DECISIONS.md](DECISIONS.md) — why things are structured this way (append-only).
+- [docs/testing/content-agent-tests.md](docs/testing/content-agent-tests.md) — living log of every validation test run against the Content Agent (real inputs, real outputs, independent-review findings). Append new tests here; don't scatter test results elsewhere.
 - **BD/pitch/relationship context** (not build) → `../claude/brand_os/brands/techequity/` — separate repo, owns the strategy/research/relationship reasoning. Has its own `CLAUDE.md` with its own orientation. Don't duplicate that reasoning here.
 - **ClawMax runtime** (not yet deployed to — the prototype is still Claude-Code-only) → `../openclaw_GTM/clawmax/WORKSPACES/techequity/`
 

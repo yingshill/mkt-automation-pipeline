@@ -1,6 +1,6 @@
 # TechEquity Marketing Workflow — Roadmap
 
-What's being built and when. Hub: [README](README.md) · why: [DECISIONS](DECISIONS.md).
+What's being built and when. Hub: [README](README.md) · why: [DECISIONS](DECISIONS.md) · test results: [test log](docs/testing/content-agent-tests.md).
 
 ---
 
@@ -8,27 +8,31 @@ What's being built and when. Hub: [README](README.md) · why: [DECISIONS](DECISI
 
 - Repo scaffolded (2026-07-01).
 - `WORKSPACES/techequity/` created in the shared ClawMax install and registered in the dashboard's workspace registry (2026-07-02) — empty skeleton, no agents/workflows authored yet. **Note:** this is a *local dev clone* of open-source ClawMax (`openclaw_GTM/clawmax/`, MIT), separate from TechEquity's own formal design-partner access — see Open questions, don't conflate the two.
-- **⚠️ Corrected, 2026-07-13 — this section was stale relative to the actual worktree.** Content pipeline prototype (`.claude/worktrees/content-pipeline-prototype`, branch `worktree-content-pipeline-prototype`), per git log:
-  - Task 1 — shared SQLite store (`skills/store.py`). Done.
-  - Task 2 — YouTube + speaker-page fetch layer (`skills/fetch_sessions.py`). Done; real session-data sourcing deferred, see DECISIONS.md.
-  - Task 3 — Content Agent persona + draft validator. **Done — generates real draft output** for LinkedIn, Instagram, Facebook, a YouTube-shorts script, and Sidekick, from one placeholder session (`prototype/output/drafts/local-placeholder-001-*.md`).
+- **✅ Merged to `master`, 2026-07-14 — the prototype no longer lives in a worktree.** It was originally built on branch `worktree-content-pipeline-prototype`; that work is now merged (fast-forward) into `master` and the worktree/branch were removed. All paths below are relative to this repo's root, not a worktree.
+  - Task 1 — shared SQLite store (`prototype/skills/store.py`). Done.
+  - Task 2 — YouTube + speaker-page fetch layer (`prototype/skills/fetch_sessions.py`). Done; real session-data sourcing deferred, see DECISIONS.md.
+  - Task 3 — Content Agent persona + draft validator. Done — generates real draft output for LinkedIn, Instagram, Facebook, a YouTube-shorts script, and Sidekick, from one placeholder session (`prototype/output/drafts/local-placeholder-001-*.md`).
   - Task 4 — Lead Capture Agent persona + enrichment validator + sample leads. Done.
   - Task 5 — Outreach Agent persona (draft-only, no send capability). Done.
   - Task 6 — Nurture Agent persona (sequence templates, no live scheduler). Done.
   - Task 7 — Markdown dashboard renderer. Done.
-  - Task 8 — Orchestration driver (wires all 5 together end-to-end). **In progress** — `prototype/tests/test_run_pipeline.py` exists but is uncommitted.
+  - Task 8 — Orchestration driver (wires all 5 together end-to-end). **Still in progress** — `prototype/tests/test_run_pipeline.py` is now committed (as WIP) but imports `prototype.run_pipeline`, which doesn't exist yet. Not part of the captions-integration work below.
+- **✅ Captions-integration extension, 2026-07-13/14 — 4 tasks, all reviewed clean, merged.**
+  - Task 1 — `validate_content_agent_input` added to `prototype/skills/validators.py`.
+  - Task 2 — Content Agent persona (`prototype/agents/content-agent.md`) rewritten to accept template + Luma event details + optional past-reference post, alongside the original session input.
+  - Task 3 — schema fix: `drafts.session_id` made nullable in `store.py` (found during Task 2's manual validation — the store couldn't persist a session-less draft, exactly the case this extension exists for).
+  - Task 4 — dashboard fix: `render_dashboard.py` now surfaces session-less ("unattached") drafts, which it previously counted but never displayed (found during the final whole-branch review).
+  - **Validated with 2 real test runs** — see [test log](docs/testing/content-agent-tests.md): an upcoming real event with no speakers announced yet (correctly avoided fabricating names), and an already-happened real event with a full real 6-speaker roster (100% accurate, no invented speaker; one reviewer false-positive caught and corrected).
 
 ## Active
 
-- **Finish Task 8** — the orchestration driver — to get a working end-to-end run of the prototype.
-- **Confirmed direction, 2026-07-13** (from the "Social Media Intro" meeting with Mateja Ueligitone — see `../claude/brand_os/brands/techequity/engagement/meeting-notes/2026-07-13-social-media-intro.md`, and `../claude/brand_os/brands/techequity/DECISIONS.md`): Mateja's real captions/video-shorts workflow (Sidekick hooks/timestamps → manual Gemini/Claude scripting in fresh chats each time → CapCut/Figma editing) is almost exactly the gap the **Content Agent** already closes. Direction is now: **connect the existing Content Agent to her real workflow and port it to ClawMax** — not a standalone chatbot, not a from-scratch build. [VERIFY] with Sheena directly before treating this as fully locked (see Open questions).
-- **✅ Unblocked, 2026-07-13 — Mateja delivered the captions workflow outline** (raw: `../claude/brand_os/brands/techequity/engagement/meeting-notes/2026-07-13-mateja-workflow-outline.md`; extracted: `research-brief.md` §B). Concrete integration requirements for porting the Content Agent, now known:
-  1. Trigger: content is planned weekly in Slack + a Monday board — the agent needs a way to know what's due this week (Monday API, or a manual trigger for now).
-  2. Draft input isn't just "a session" — it's a **post template** (from "the Doc") + Luma event details + optionally a past reference post for style. The existing Content Agent takes a session as input; needs adapting to also consume the template/Luma-details structure, not just replace the whole human process.
-  3. **The approval loop is human-in-the-loop by design** — Sheena/Ave review, Mateja/Satvika edit — the agent should output a draft **into their existing review surface ("the Doc")**, not attempt to auto-publish. This actually matches the prototype's existing "draft-only" outreach-agent philosophy (see DECISIONS.md) — same caution applies here.
-  4. TypeGrow formatting + final scheduling stay manual (Mateja's own bolding/spacing judgment, manual LinkedIn posting) — not in scope for the agent, at least initially.
-  - Video-shorts side (Sidekick → Gemini/Claude → CapCut/Figma) has no written breakdown yet — only covered verbally in the meeting. [VERIFY] whether Mateja will send one.
-- **🔴 Design spec — living document, 2026-07-13:** `.claude/worktrees/content-pipeline-prototype/docs/superpowers/specs/2026-07-13-mateja-captions-integration-design.md`. Covers the Content Agent's extended input contract (session + template + Luma details + optional past post), LinkedIn-only output for now, and the Doc hand-off (local file + manual paste, pending a real Docs-write integration). **Update this file in place** as the integration design evolves — don't create a new dated spec for incremental changes to this same effort. **Implementation plan now written and executed, 2026-07-13** (`.claude/worktrees/content-pipeline-prototype/.superpowers/sdd/task-2-brief.md` + its Task 1 predecessor): Task 1 (`validate_content_agent_input` in `skills/validators.py`) and Task 2 (Content Agent persona rewritten in `prototype/agents/content-agent.md` for the template+Luma+past-post input contract) are both complete. Step 7's manual validation — a real template+Luma-details LinkedIn draft for the upcoming "Enterprise AI at Scale" forum, run through a subagent invocation of the rewritten persona — **passed** (reflected the template structure and real event details, correct LinkedIn register, no fabricated speaker names despite the real event's empty speaker list; see `prototype/output/drafts/mateja-workflow-enterprise-ai-at-scale-talks-ai-agent-workshops-LinkedIn.md`). Not moved to Done — that call is left to the human.
+- **Finish Task 8** — the orchestration driver — to get a working end-to-end run of the full 5-part prototype. Not blocking the captions-integration work, which is already merged and tested independently of it.
+- **Keep testing and refining the Content Agent against the [test log](docs/testing/content-agent-tests.md)'s open candidates** — notably: adding per-speaker session-title and run-of-show fields to `luma_event_details` (a real posted-post comparison showed the real posts include both, untested so far), testing the post-event/recap path (needs a real session/transcript), and testing with a `past_reference_post` provided (untested so far).
+- **Design spec — living document:** `docs/superpowers/specs/2026-07-13-mateja-captions-integration-design.md` (now in this repo's root `docs/`, not a worktree). Covers the Content Agent's extended input contract, LinkedIn-only output for now, and the Doc hand-off (local file + manual paste, pending a real Docs-write integration — investigated during Task 2; no available Google Drive integration can write into an existing Doc). Update this file in place as the design evolves.
+- **Still pending, not yet acted on:**
+  1. Trigger for weekly content planning (Slack + Monday board) — no automated trigger built yet, manual for now.
+  2. Video-shorts workflow (Sidekick → Gemini/Claude → CapCut/Figma) has no written breakdown from Mateja yet — only covered verbally. [VERIFY] whether she'll send one.
+  3. Whether Sheena has directly confirmed the ClawMax-as-runtime direction, or whether it's still the user's own directional call — see Open questions.
 
 ## Backlog
 
