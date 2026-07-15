@@ -57,6 +57,14 @@ CREATE TABLE IF NOT EXISTS nurture_stage (
     next_touch_template TEXT,
     updated_at TEXT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS events (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    event_title TEXT NOT NULL,
+    event_date TEXT NOT NULL,
+    session_id INTEGER REFERENCES sessions(id),
+    created_at TEXT NOT NULL
+);
 """
 
 
@@ -233,5 +241,42 @@ def list_nurture_stages(db_path) -> list[dict]:
     try:
         rows = conn.execute("SELECT * FROM nurture_stage ORDER BY id").fetchall()
         return [dict(r) for r in rows]
+    finally:
+        conn.close()
+
+
+def insert_event(db_path, event_title, event_date) -> int:
+    conn = _connect(db_path)
+    try:
+        cur = conn.execute(
+            "INSERT INTO events (event_title, event_date, session_id, created_at) "
+            "VALUES (?, ?, NULL, ?)",
+            (event_title, event_date, _now()),
+        )
+        conn.commit()
+        return cur.lastrowid
+    finally:
+        conn.close()
+
+
+def get_event(db_path, event_id) -> dict | None:
+    conn = _connect(db_path)
+    try:
+        row = conn.execute(
+            "SELECT * FROM events WHERE id = ?", (event_id,)
+        ).fetchone()
+        return dict(row) if row else None
+    finally:
+        conn.close()
+
+
+def link_session_to_event(db_path, event_id, session_id) -> None:
+    conn = _connect(db_path)
+    try:
+        conn.execute(
+            "UPDATE events SET session_id = ? WHERE id = ?",
+            (session_id, event_id),
+        )
+        conn.commit()
     finally:
         conn.close()

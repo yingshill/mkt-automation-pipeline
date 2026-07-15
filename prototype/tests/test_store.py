@@ -6,6 +6,7 @@ from prototype.skills.store import (
     insert_lead, update_lead_enrichment, list_leads,
     insert_outreach, list_outreach,
     upsert_nurture_stage, list_nurture_stages,
+    insert_event, get_event, link_session_to_event,
 )
 
 
@@ -104,3 +105,23 @@ def test_upsert_nurture_stage_updates_in_place(db_path):
     stages = list_nurture_stages(db_path)
     assert len(stages) == 1
     assert stages[0]["stage"] == "touch_2"
+
+
+def test_insert_and_get_event(db_path):
+    event_id = insert_event(db_path, event_title="June Forum", event_date="2026-06-30")
+    event = get_event(db_path, event_id)
+    assert event["event_title"] == "June Forum"
+    assert event["event_date"] == "2026-06-30"
+    assert event["session_id"] is None
+
+
+def test_link_session_to_event(db_path):
+    event_id = insert_event(db_path, event_title="June Forum", event_date="2026-06-30")
+    session_id = insert_session(db_path, video_id="v1", title="June Forum Recording", url="u1")
+    link_session_to_event(db_path, event_id, session_id)
+    event = get_event(db_path, event_id)
+    assert event["session_id"] == session_id
+
+
+def test_get_event_returns_none_for_unknown_id(db_path):
+    assert get_event(db_path, 9999) is None
